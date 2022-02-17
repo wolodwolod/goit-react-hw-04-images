@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-// import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { BiSearchAlt } from 'react-icons/bi';
 import s from './Searchbar.module.css';
 
@@ -27,11 +27,12 @@ class Searchbar extends Component {
       e.preventDefault();
       console.log('HS!')
     if (this.state.query.trim() === '') {
-      alert('Please specify your query!');
+      toast.warn('Please specify your query!');
       return;
     }
     this.props.onSubmit(this.state.query);
-    this.setState({ query: '' });
+    
+      this.setState({ query: '' });
   };
 
 //   Разметка
