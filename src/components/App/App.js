@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import fetchData from 'Api/pixabayApi';
+import fetchData from 'api/pixabayApi';
 import  Container  from 'components/Container';
 import  Searchbar  from 'components/Searchbar';
 import  ImageGallery  from 'components/ImageGallery';
@@ -40,6 +40,8 @@ export class App extends Component {
 
     if (query !== prevState.query ||
       (page !== prevState.page && page !== 1)) {
+      
+      this.setState({ status: Status.PENDING });
       this.fetchImages();
     }
   }
@@ -49,11 +51,7 @@ export class App extends Component {
   fetchImages = () => {
     const { query, page } = this.state;
     const perPage = 12;
-
-    this.setState({ status: Status.PENDING });
-  
-    console.log(query, page, perPage)
-
+        
     fetchData(query, page, perPage)
       .then(({ hits, totalHits }) => {
 
@@ -61,7 +59,7 @@ export class App extends Component {
 
         const totalPages = Math.ceil(totalHits / perPage);
 
-if (hits.length === 0) {
+       if (hits.length === 0) {
           return toast.error('Sorry, no images found. Please, try again!');
         }
 
@@ -73,7 +71,7 @@ if (hits.length === 0) {
           toast.info("You've reached the end of search results.");
         }
 
-        const data = hits.map(({ id, webformatURL, largeImageURL, tags }) => {
+        const newImages = hits.map(({ id, webformatURL, largeImageURL, tags }) => {
           return {
             id,
             webformatURL,
@@ -82,22 +80,27 @@ if (hits.length === 0) {
           };
         });
         this.setState(({ images }) => ({
-          images: [...images, ...data],
+          images: [...images, ...newImages],
           // page: page + 1,
           total: totalHits,
+          status: Status.RESOLVED 
         }));
       })
-      .catch(error => this.setState({ error }))
-      .finally(() => this.setState({ isLoading: false })
+      .catch(error => this.setState({
+        error,
+        status: Status.REJECTED
+      }))
+      // .finally(() => this.setState({ isLoading: false })
 
 
-      )
+      
   }
  
   
   
   
   handleSearchSubmit = query => {
+
     this.setState({ query });
   };
 

@@ -8,7 +8,7 @@ function fetchData(query, page, perPage) {
         .then(response => {
           if (response.ok) {
 
-      // console.log(response)
+   
       return response.json();
     }
 
