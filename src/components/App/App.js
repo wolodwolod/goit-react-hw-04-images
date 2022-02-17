@@ -101,9 +101,17 @@ export class App extends Component {
   
   handleSearchSubmit = query => {
 
-    this.setState({ query });
+     if (query === this.state.query) return;
+    this.setState({
+      images: [],
+      query,
+      page: 1,
+      error: null,
+    });
   };
 
+
+  
   render() {
 
 
