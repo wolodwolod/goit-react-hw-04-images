@@ -120,6 +120,13 @@ export class App extends Component {
     this.setState({ largeImageURL: largeImageURL });
   };
 
+  onLoadMore = () => {
+    this.setState(({ page }) => ({
+      page: page + 1,
+      // isLoading: true,
+    }));
+  };
+
 
   render() {
 const { images, error, showModal, largeImageURL, tags, total, status } =
@@ -128,14 +135,17 @@ const { images, error, showModal, largeImageURL, tags, total, status } =
     // const totalPages = Math.ceil(total / perPage);
     // const noOnePage = totalPages !== 1;
     // const isLastPage = images.length === total;
-    // const loadMoreBtn = noOnePage && status === 'resolved'&& !isLastPage;
+    const loadMoreBtn =
+      status === 'resolved'
+      && images.length !== 0
+      && images.length !== total;
 
     return (
       <Container>
       
         <Searchbar onSubmit={this.handleSearchSubmit} />
        
-        {status === 'idle' && <div>INPUT A QUERY ! </div>}
+        {status === 'idle' && <div style={{ margin: 'auto' }}>INPUT A QUERY ! </div>}
 
         {status === 'pending' && <Loader />}
         
@@ -143,7 +153,7 @@ const { images, error, showModal, largeImageURL, tags, total, status } =
 
         {status === 'resolved' && <ImageGallery images={images}onClick={this.toggleModal} />} 
         
-       {/* {loadMoreBtn && <Button onClick={this.onLoadMore}>Load more</Button>} */}
+       {loadMoreBtn && <Button onClick={this.onLoadMore}>Load more</Button>}
 
         {/* {showModal && (
           <Modal onClose={this.toggleModal}>
