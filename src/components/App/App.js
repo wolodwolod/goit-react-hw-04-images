@@ -5,9 +5,12 @@ import fetchData from 'api/pixabayApi';
 import  Container  from 'components/Container';
 import  Searchbar  from 'components/Searchbar';
 import  ImageGallery  from 'components/ImageGallery';
+// import  ImageGalleryItem  from 'components/ImageGalleryItem';
 import  Button  from 'components/Button';
 import  Modal  from 'components/Modal';
-import  Loader  from 'components/Loader';
+import Loader from 'components/Loader';
+// import s from './App.module.css';
+
 
 
 
@@ -17,6 +20,7 @@ const Status = {
   RESOLVED: 'resolved',
   REJECTED: 'rejected',
 };
+const PER_PAGE = 12;
 
 export class App extends Component {
 
@@ -48,20 +52,21 @@ export class App extends Component {
 
   // Функция - запрос
 
-  fetchImages = () => {
+  // 
+    fetchImages = () => setTimeout(() => {{
     const { query, page } = this.state;
-    const perPage = 12;
-        
-    fetchData(query, page, perPage)
+           
+    fetchData(query, page, PER_PAGE)
       .then(({ hits, totalHits }) => {
 
         console.log(hits, totalHits)
 
-        const totalPages = Math.ceil(totalHits / perPage);
+        const totalPages = Math.ceil(totalHits / PER_PAGE);
 
-       if (hits.length === 0) {
+        if (hits.length === 0) {
+          this.setState({ status: Status.IDLE });
           return toast.error('Sorry, no images found. Please, try again!');
-        }
+                  }
 
         if (page === 1) {
           toast.success(`Hooray! We found ${totalHits} images.`);
@@ -70,6 +75,7 @@ export class App extends Component {
         if (page === totalPages) {
           toast.info("You've reached the end of search results.");
         }
+      
 
         const newImages = hits.map(({ id, webformatURL, largeImageURL, tags }) => {
           return {
@@ -79,11 +85,11 @@ export class App extends Component {
             tags,
           };
         });
-        this.setState(({ images }) => ({
+                this.setState(({ images }) => ({
           images: [...images, ...newImages],
           // page: page + 1,
           total: totalHits,
-          status: Status.RESOLVED 
+          status: Status.RESOLVED
         }));
       })
       .catch(error => this.setState({
@@ -91,11 +97,8 @@ export class App extends Component {
         status: Status.REJECTED
       }))
       // .finally(() => this.setState({ isLoading: false })
-
-
-      
-  }
- 
+   }
+ }, 1000);
   
   
   
@@ -110,16 +113,44 @@ export class App extends Component {
     });
   };
 
+  toggleModal = largeImageURL => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
+    this.setState({ largeImageURL: largeImageURL });
+  };
 
-  
+
   render() {
-
+const { images, error, showModal, largeImageURL, tags, total, status } =
+      this.state;
+    // const perPage = 12;
+    // const totalPages = Math.ceil(total / perPage);
+    // const noOnePage = totalPages !== 1;
+    // const isLastPage = images.length === total;
+    // const loadMoreBtn = noOnePage && status === 'resolved'&& !isLastPage;
 
     return (
       <Container>
       
         <Searchbar onSubmit={this.handleSearchSubmit} />
-      
+       
+        {status === 'idle' && <div>INPUT A QUERY ! </div>}
+
+        {status === 'pending' && <Loader />}
+        
+        {status === 'rejected' && toast.error(error.message)}
+
+        {status === 'resolved' && <ImageGallery images={images}onClick={this.toggleModal} />} 
+        
+       {/* {loadMoreBtn && <Button onClick={this.onLoadMore}>Load more</Button>} */}
+
+        {/* {showModal && (
+          <Modal onClose={this.toggleModal}>
+            <img src={largeImageURL} alt={tags} />
+          </Modal>
+        )} */}
+    
         
         <ToastContainer theme="colored" position="top-right" autoClose={3000} />
       </Container>
