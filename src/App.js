@@ -54,7 +54,10 @@ class App extends Component {
 
   // Функция - запрос
   
-    fetchImages = () => setTimeout(() => {{
+  fetchImages = () =>
+    // setTimeout(() =>
+    // {
+      {
     const { query, page } = this.state;
            
     fetchData(query, page, PER_PAGE)
@@ -97,7 +100,7 @@ class App extends Component {
         status: Status.REJECTED
       }))
         }
- }, 1000);
+//  }, 1000);
   
   // Методы
   
