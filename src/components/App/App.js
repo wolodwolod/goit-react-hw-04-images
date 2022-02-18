@@ -7,8 +7,10 @@ import  Searchbar  from 'components/Searchbar';
 import  ImageGallery  from 'components/ImageGallery';
 // import  ImageGalleryItem  from 'components/ImageGalleryItem';
 import  Button  from 'components/Button';
+import { AfterButton } from 'components/Button/AfterButton';
 import  Modal  from 'components/Modal';
 import Loader from 'components/Loader';
+
 // import s from './App.module.css';
 
 
@@ -17,6 +19,7 @@ import Loader from 'components/Loader';
 const Status = {
   IDLE: 'idle',
   PENDING: 'pending',
+  PENDING_MORE: 'pending_more',
   RESOLVED: 'resolved',
   REJECTED: 'rejected',
 };
@@ -38,16 +41,17 @@ export class App extends Component {
   
   componentDidUpdate(prevProps, prevState) {
   
-    const { query, page } = this.state;
-  
+    const { images, query, page  } = this.state;
+    const lodeNextPage = (page !== prevState.page && page !== 1);
+     
     // Запуск функции - запроса
-
-    if (query !== prevState.query ||
-      (page !== prevState.page && page !== 1)) {
+    if (query !== prevState.query || lodeNextPage) {
+           
+      if (lodeNextPage) { this.setState({ status: Status.PENDING_MORE }) }
+      if (images.length === 0) { this.setState({ status: Status.PENDING }) }
       
-      this.setState({ status: Status.PENDING });
       this.fetchImages();
-    }
+   }
   }
 
   // Функция - запрос
@@ -123,18 +127,15 @@ export class App extends Component {
   onLoadMore = () => {
     this.setState(({ page }) => ({
       page: page + 1,
-      // isLoading: true,
-    }));
+      // status: Status.PENDING_MORE
+          }));
   };
 
 
   render() {
 const { images, error, showModal, largeImageURL, tags, total, status } =
       this.state;
-    // const perPage = 12;
-    // const totalPages = Math.ceil(total / perPage);
-    // const noOnePage = totalPages !== 1;
-    // const isLastPage = images.length === total;
+    
     const loadMoreBtn =
       status === 'resolved'
       && images.length !== 0
@@ -145,15 +146,19 @@ const { images, error, showModal, largeImageURL, tags, total, status } =
       
         <Searchbar onSubmit={this.handleSearchSubmit} />
        
-        {status === 'idle' && <div style={{ margin: 'auto' }}>INPUT A QUERY ! </div>}
-
-        {status === 'pending' && <Loader />}
-        
         {status === 'rejected' && toast.error(error.message)}
 
-        {status === 'resolved' && <ImageGallery images={images}onClick={this.toggleModal} />} 
+        {status === 'idle' && <div style={{ margin: 'auto' }}>INPUT A QUERY ! </div>}
+
         
-       {loadMoreBtn && <Button onClick={this.onLoadMore}>Load more</Button>}
+                
+        {(status === 'resolved' || status === 'pending_more') && <ImageGallery images={images} onClick={this.toggleModal} />}
+         {loadMoreBtn && <Button onClick={this.onLoadMore}>Load more</Button>}       
+        {status === 'pending_more' && <AfterButton>Loading...</AfterButton>}
+        
+        {(status === 'pending' || status === 'pending_more') && <Loader />}
+        
+       
 
         {/* {showModal && (
           <Modal onClose={this.toggleModal}>
@@ -162,7 +167,7 @@ const { images, error, showModal, largeImageURL, tags, total, status } =
         )} */}
     
         
-        <ToastContainer theme="colored" position="top-right" autoClose={3000} />
+        <ToastContainer theme="colored" position="top-right" autoClose={5000} />
       </Container>
       
     )
