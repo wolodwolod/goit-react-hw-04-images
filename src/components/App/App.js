@@ -55,8 +55,7 @@ export class App extends Component {
   }
 
   // Функция - запрос
-
-  // 
+  
     fetchImages = () => setTimeout(() => {{
     const { query, page } = this.state;
            
@@ -104,7 +103,7 @@ export class App extends Component {
    }
  }, 1000);
   
-  
+  // Методы
   
   handleSearchSubmit = query => {
 
@@ -131,6 +130,7 @@ export class App extends Component {
           }));
   };
 
+  // Разметка
 
   render() {
 const { images, error, showModal, largeImageURL, tags, total, status } =
@@ -158,13 +158,11 @@ const { images, error, showModal, largeImageURL, tags, total, status } =
         
         {(status === 'pending' || status === 'pending_more') && <Loader />}
         
-       
-
-        {/* {showModal && (
+        {showModal && (
           <Modal onClose={this.toggleModal}>
             <img src={largeImageURL} alt={tags} />
           </Modal>
-        )} */}
+        )}
     
         
         <ToastContainer theme="colored" position="top-right" autoClose={5000} />
