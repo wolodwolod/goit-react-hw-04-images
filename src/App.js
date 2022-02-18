@@ -147,7 +147,7 @@ const { images, error, showModal, largeImageURL, tags, total, status } =
        
         {status === 'rejected' && toast.error(error.message)}
 
-        {status === 'idle' && <div style={{ margin: 'auto' }}>INPUT A QUERY ! </div>}
+        {status === 'idle' && <div style={{ margin: 'auto' }}>PLEASE, INPUT A QUERY ! </div>}
                      
         {(status === 'resolved' || status === 'pending_more') && <ImageGallery images={images} onClick={this.toggleModal} />}
          {loadMoreBtn && <Button onClick={this.onLoadMore}>Load more</Button>}       
