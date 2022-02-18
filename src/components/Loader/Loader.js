@@ -1,11 +1,15 @@
+import { createPortal } from 'react-dom';
 import { TailSpin } from 'react-loader-spinner';
 import s from './Loader.module.css';
 
+const secondRoot = document.querySelector('#second-root');
+
  const Loader = () => {
-  return (
+  return createPortal(
     <div className={s.Loader} >
       <TailSpin />
-    </div>
+      </div>,
+      secondRoot
   );
 };
 export default Loader;

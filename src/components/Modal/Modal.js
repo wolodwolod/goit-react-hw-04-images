@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import s from './Modal.module.css';
 
-const modalRoot = document.querySelector('#modal-root');
+const secondRoot = document.querySelector('#second-root');
 
 class Modal extends Component {
   static propTypes = {
@@ -38,7 +38,7 @@ class Modal extends Component {
           <div className={s.Overlay} onClick={this.handleBackdropClick}>
   <div className={s.Modal}>{this.props.children}</div>,
           </div>,
-          modalRoot
+          secondRoot
           
           
     //   <Overlay onClick={this.handleBackdropClick}>

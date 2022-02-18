@@ -7,15 +7,13 @@ function fetchData(query, page, PER_PAGE) {
     return fetch(`https://pixabay.com/api/?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${PER_PAGE}`)
         .then(response => {
           if (response.ok) {
-
    
       return response.json();
     }
 
-    return Promise.reject(new Error(`Нет изображений с названием ${query}`));
+    return Promise.reject(new Error(`Sorry, no images with words ${query} found. Please, try again!' `));
   });
 }
-
 
 export default fetchData;
 

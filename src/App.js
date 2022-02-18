@@ -14,8 +14,6 @@ import Loader from 'components/Loader';
 // import s from './App.module.css';
 
 
-
-
 const Status = {
   IDLE: 'idle',
   PENDING: 'pending',
@@ -25,7 +23,7 @@ const Status = {
 };
 const PER_PAGE = 12;
 
-export class App extends Component {
+class App extends Component {
 
   state = {
     images: [],
@@ -90,7 +88,6 @@ export class App extends Component {
         });
                 this.setState(({ images }) => ({
           images: [...images, ...newImages],
-          // page: page + 1,
           total: totalHits,
           status: Status.RESOLVED
         }));
@@ -99,8 +96,7 @@ export class App extends Component {
         error,
         status: Status.REJECTED
       }))
-      // .finally(() => this.setState({ isLoading: false })
-   }
+        }
  }, 1000);
   
   // Методы
@@ -149,9 +145,7 @@ const { images, error, showModal, largeImageURL, tags, total, status } =
         {status === 'rejected' && toast.error(error.message)}
 
         {status === 'idle' && <div style={{ margin: 'auto' }}>INPUT A QUERY ! </div>}
-
-        
-                
+                     
         {(status === 'resolved' || status === 'pending_more') && <ImageGallery images={images} onClick={this.toggleModal} />}
          {loadMoreBtn && <Button onClick={this.onLoadMore}>Load more</Button>}       
         {status === 'pending_more' && <AfterButton>Loading...</AfterButton>}
@@ -163,11 +157,10 @@ const { images, error, showModal, largeImageURL, tags, total, status } =
             <img src={largeImageURL} alt={tags} />
           </Modal>
         )}
-    
-        
+            
         <ToastContainer theme="colored" position="top-right" autoClose={5000} />
       </Container>
-      
-    )
+          )
   }
 }
+export default App;
