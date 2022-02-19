@@ -40,12 +40,12 @@ class App extends Component {
   componentDidUpdate(prevProps, prevState) {
   
     const { images, query, page  } = this.state;
-    const lodeNextPage = (page !== prevState.page && page !== 1);
+    const loadNextPage = (page !== prevState.page && page !== 1);
      
     // Запуск функции - запроса
-    if (query !== prevState.query || lodeNextPage) {
+    if (query !== prevState.query || loadNextPage) {
            
-      if (lodeNextPage) { this.setState({ status: Status.PENDING_MORE }) }
+      if (loadNextPage) { this.setState({ status: Status.PENDING_MORE }) }
       if (images.length === 0) { this.setState({ status: Status.PENDING }) }
       
       this.fetchImages();
