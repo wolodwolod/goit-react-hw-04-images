@@ -1,49 +1,43 @@
-import { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+// import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { BiSearchAlt } from 'react-icons/bi';
 import s from './Searchbar.module.css';
 
 
-class Searchbar extends Component {
+function Searchbar({ onSubmit }) {
   
-    static propTypes = {
-    onSubmit: PropTypes.func,
-  };
+  
 
-  state = {
-    query: '',
-  };
+  const [query, setQuery] = useState('');
 
     // Изменение запроса
   
-    handleChange = e => {
-    this.setState({ query: e.currentTarget.value });
+    const handleChange = e => {
+    setQuery(e.currentTarget.value);
   };
 
     // Отправка запроса
     
-  handleSubmit = e => {
+  const handleSubmit = e => {
       e.preventDefault();
       console.log('HS!')
-    if (this.state.query.trim() === '') {
+    if (query.trim() === '') {
       toast.warn('Please specify your query!');
       return;
     }
-    this.props.onSubmit(this.state.query);
+    onSubmit(query);
     
-      this.setState({ query: '' });
+      setQuery('');
   };
 
 //   Разметка
     
-  render() {
-    const { query } = this.state;
-
+ 
       return (
 
           <header className={s.Searchbar}>
-              <form className={s.SearchForm} onSubmit={this.handleSubmit}>
+              <form className={s.SearchForm} onSubmit={handleSubmit}>
                   <button type="submit" className={s.SearchForm_button}>
                       <span className={s.SearchForm_button_label}><BiSearchAlt style={{ width: 30, height: 30 }}/>
                       </span>
@@ -55,7 +49,7 @@ class Searchbar extends Component {
                       type="text"
                       name="query"
                       value={query}
-                      onChange={this.handleChange}
+                      onChange={handleChange}
       autoComplete="off"
       autoFocus
       placeholder="Search images and photos"
@@ -67,6 +61,8 @@ class Searchbar extends Component {
   
     );
   }
-}
+// Searchbar.propTypes = {
+//   onSubmit: PropTypes.func,
+// };
 
 export default Searchbar;
