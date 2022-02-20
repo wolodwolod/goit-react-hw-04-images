@@ -53,9 +53,10 @@ function App() {
   // Произошло обновление query или page? Запрос. 
 
   useEffect(() => {
-    if (!query) return;
-    setStatus(Status.PENDING);
+    if (query === '') return;
     fetchImages();
+    setStatus(Status.PENDING);
+    
   }, [query, page]);
   
   // useEffect(() => {
