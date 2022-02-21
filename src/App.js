@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import  usePrevious  from 'helper/usePrevious';
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import fetchData from 'api/pixabayApi';
@@ -51,17 +53,24 @@ function App() {
   // };
 
   // Произошло обновление query или page? Запрос. 
-
+  //  const loadNextPage = (page !== prevState.page && page !== 1);
+  const prevSPage = usePrevious({ page });
+  const loadNextPage = (page !== prevSPage && page !== 1);
+  
   useEffect(() => {
     if (query === '') return;
-    fetchImages();
-    setStatus(Status.PENDING);
-    
+
+    fetchImages(query, page, params);
+
+    if (loadNextPage) { setStatus(Status.PENDING_MORE) }
+    if (images.length === 0) { setStatus(Status.PENDING) }
+        
   }, [query, page]);
   
   // useEffect(() => {
-  //   setStatus(Status.PENDING_MORE);
   //   fetchData();
+  //   setStatus(Status.PENDING_MORE);
+    
   // }, [page]);
   
   // componentDidUpdate(prevProps, prevState) {
