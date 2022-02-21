@@ -45,13 +45,13 @@ function App() {
     });
 
 
-    // Произошло обновление query или page? Запрос. 
+   
   const prevPage = usePrevious({ page });
-  
+  const loadNextPage = (page !== prevPage && page !== 1);
   
 
   useEffect(() => {
-   const loadNextPage = (page !== prevPage && page !== 1); 
+    
     // Функция - запрос
     
   const fetchImages = () => {
@@ -93,7 +93,7 @@ function App() {
   }
 
     // Вызов функции
-
+    
     if (query === '') return;
 
     
