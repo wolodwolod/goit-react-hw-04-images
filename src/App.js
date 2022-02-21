@@ -47,20 +47,12 @@ function App() {
 
     // Произошло обновление query или page? Запрос. 
   const prevPage = usePrevious({ page });
-  const loadNextPage = (page !== prevPage && page !== 1);
   
+  
+
   useEffect(() => {
-    if (query === '') return;
-
-    fetchImages(query, page, params);
-
-    if (loadNextPage) { setStatus(Status.PENDING_MORE) }
-    if (images.length === 0) { setStatus(Status.PENDING) }
-        
-  }, [query, page]);
-  
-    
-  // Функция - запрос
+   const loadNextPage = (page !== prevPage && page !== 1); 
+    // Функция - запрос
     
   const fetchImages = () => {
         
@@ -99,6 +91,21 @@ function App() {
         setError(error),
         setStatus(Status.REJECTED))
   }
+
+    // Вызов функции
+
+    if (query === '') return;
+
+    
+    fetchImages(query, page, params);
+
+    if (loadNextPage) { setStatus(Status.PENDING_MORE) }
+    if (images.length === 0) { setStatus(Status.PENDING) }
+        
+  }, [query, page]);
+  
+    
+  
    
   // Методы
   
