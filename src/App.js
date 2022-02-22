@@ -25,7 +25,7 @@ const Status = {
 const PER_PAGE = 12;
 
 
-function App() {
+const App = () => {
   
   const [images, setImages] = useState([]);
   const [query, setQuery] = useState('');
@@ -42,7 +42,6 @@ function App() {
 
 
   useEffect(() => {
-
     const prevPage = prevState => { return prevState.page };
     const loadNextPage = (page !== prevPage && page !== 1);
    
@@ -75,8 +74,8 @@ function App() {
             tags,
           };
         });
-        // setImages(prevState => { return [...prevState.images, ...newImages] });
-        setImages([...images, ...newImages]);
+        
+        setImages(prevImages => [...prevImages, ...newImages]);
         setTotal(totalHits);
         setStatus(Status.RESOLVED);
       }
@@ -92,10 +91,12 @@ function App() {
     if (query === "") return;
 
     
+    
     fetchImages();
 
-    if (loadNextPage) { setStatus(Status.PENDING_MORE) }
-    if (images.length === 0) { setStatus(Status.PENDING) }
+if (loadNextPage) { setStatus(Status.PENDING_MORE) }
+    else { setStatus(Status.PENDING) }
+    
         
   }, [query, page]);  
   
