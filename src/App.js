@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import  usePrevious  from 'helper/usePrevious';
+// import  usePrevious  from 'helper/usePrevious';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,7 +13,6 @@ import  Button  from 'components/Button';
 import { AfterButton } from 'components/Button/AfterButton';
 import  Modal  from 'components/Modal';
 import Loader from 'components/Loader';
-
 
 const Status = {
   IDLE: 'idle',
@@ -42,13 +41,13 @@ function App() {
     });
 
 
-   
-  const prevPage = usePrevious({ page });
-  const loadNextPage = (page !== prevPage && page !== 1);
-  
-
   useEffect(() => {
-    
+
+    const prevPage = prevState => { return prevState.page };
+    // const prevImage = prevState => { return prevState.images };
+
+    const loadNextPage = (page !== prevPage && page !== 1);
+   
     // Функция - запрос
           
     const fetchImages = async () => {
@@ -78,22 +77,21 @@ function App() {
             tags,
           };
         });
-      
+        // setImages(prevState => { return [...prevState.images, ...newImages] });
         setImages([...images, ...newImages]);
         setTotal(totalHits);
         setStatus(Status.RESOLVED);
       }
+      
       catch (error) {
         setError(error);
           setStatus(Status.REJECTED)
       }
     }
         
-  
-
-    // Вызов функции
+      // Вызов функции запроса 
     
-    if (query === '') return;
+    if (query === "") return;
 
     
     fetchImages(query, page);
@@ -101,16 +99,13 @@ function App() {
     if (loadNextPage) { setStatus(Status.PENDING_MORE) }
     if (images.length === 0) { setStatus(Status.PENDING) }
         
-  }, [query, page]);
-  
-    
+  }, [query, page]);  
   
    
-  // Методы
+  // Функции
   
   const handleSearchSubmit = query => {
 
-    //  if (query === this.state.query) return;
     setQuery(query);
     setPage(1);
     setImages([]);
@@ -132,8 +127,7 @@ function App() {
       tags: '',
     });
   }
-  
-    
+      
     const onLoadMore = () => {
     setPage(page => page + 1);
                };
@@ -159,6 +153,7 @@ return (
                      
     {(status === 'resolved' || status === 'pending_more') && <ImageGallery images={images} onClick={openModal} />}
     {loadMoreBtn && <Button onClick={onLoadMore}>Load more</Button>}
+    
     {status === 'pending_more' && <AfterButton>Loading...</AfterButton>}
         
     {(status === 'pending' || status === 'pending_more') && <Loader />}
