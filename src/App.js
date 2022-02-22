@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 // import  usePrevious  from 'helper/usePrevious';
 
@@ -43,14 +42,13 @@ function App() {
 
 
   useEffect(() => {
-    
+
     const prevPage = prevState => { return prevState.page };
     const loadNextPage = (page !== prevPage && page !== 1);
    
     // Функция - запрос
           
     const fetchImages = async () => {
-     
       try {
         const { hits, totalHits } = await fetchData(query, page, PER_PAGE);
         console.log(hits, totalHits);
@@ -81,9 +79,6 @@ function App() {
         setImages([...images, ...newImages]);
         setTotal(totalHits);
         setStatus(Status.RESOLVED);
-        
-        if (loadNextPage) { setStatus(Status.PENDING_MORE) }
-        if (images.length === 0) { setStatus(Status.PENDING) }
       }
       
       catch (error) {
@@ -97,9 +92,10 @@ function App() {
     if (query === "") return;
 
     
-    fetchImages(query, page, images);
+    fetchImages();
 
-    
+    if (loadNextPage) { setStatus(Status.PENDING_MORE) }
+    if (images.length === 0) { setStatus(Status.PENDING) }
         
   }, [query, page]);  
   
