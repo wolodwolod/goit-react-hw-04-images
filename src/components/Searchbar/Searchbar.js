@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { memo, useState } from 'react';
 // import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { BiSearchAlt } from 'react-icons/bi';
@@ -65,4 +65,4 @@ function Searchbar({ onSubmit }) {
 //   onSubmit: PropTypes.func,
 // };
 
-export default Searchbar;
+export default memo(Searchbar);

@@ -1,40 +1,29 @@
 import { useState, useEffect } from 'react';
-// import  usePrevious  from 'helper/usePrevious';
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import fetchData from 'api/pixabayApi';
-
 import  Container  from 'components/Container';
 import  Searchbar  from 'components/Searchbar';
 import  ImageGallery  from 'components/ImageGallery';
-
 import  Button  from 'components/Button';
-import { AfterButton } from 'components/Button/AfterButton';
 import  Modal  from 'components/Modal';
 import Loader from 'components/Loader';
-
-const Status = {
-  IDLE: 'idle',
-  PENDING: 'pending',
-  PENDING_MORE: 'pending_more',
-  RESOLVED: 'resolved',
-  REJECTED: 'rejected',
-};
 
 const PER_PAGE = 12;
 
 
 const App = () => {
   
-  const [images, setImages] = useState([]);
+  const [data, setData] = useState({
+        images: [],
+        loading: false,
+        error: null,        
+    });
+ 
   const [query, setQuery] = useState('');
-  const [error, setError] = useState(null);
-  const [total, setTotal] = useState (0);
   const [page, setPage] = useState(1);
-  const [status, setStatus] = useState(Status.IDLE);
-
-    const [modal, setModal] = useState({
+  
+  const [modal, setModal] = useState({
         open: false,
         largeImageURL: null,
         tags: '',        
@@ -42,9 +31,7 @@ const App = () => {
 
 
   useEffect(() => {
-    const prevPage = prevState => { return prevState.page };
-    const loadNextPage = (page !== prevPage && page !== 1);
-   
+    
     // Функция - запрос
           
     const fetchImages = () => {
@@ -57,7 +44,6 @@ const App = () => {
                  
 
         if (!hits.length) {
-          setStatus(Status.IDLE)
           return toast.error('Sorry, no images found. Please, try again!');
         }
         if (page === 1) {
@@ -76,41 +62,50 @@ const App = () => {
           };
         });
         
-        setImages(prevImages => [...prevImages, ...newImages]);
-        setTotal(totalHits);
-        setStatus(Status.RESOLVED);
-      })
+        setData(prevData => {
+                    return {
+                        images: [...prevData.images, ...newImages],
+                        loading: false,
+                        error: null  }
+                })
+             })
       
       .catch(error => 
-        setError(error),
-          setStatus(Status.REJECTED)
+        setData(prevData => { 
+          return {
+                    ...prevData,
+                    loading: false,
+                    error: error}
+                })
       )
     }
         
       // Вызов функции запроса 
     
     if (query === "") return;
-
-    
     
     fetchImages();
-
-if (loadNextPage) { setStatus(Status.PENDING_MORE) }
-    else { setStatus(Status.PENDING) }
-    
+    setData(prevData => { 
+          return {
+                    ...prevData,
+                    loading: true,
+                    }
+                })
         
   }, [query, page]);  
   
-   
-  // Функции
+     // Функции
   
   const handleSearchSubmit = query => {
 
     setQuery(query);
     setPage(1);
-    setImages([]);
-    setError(null);
-  };
+    setData({
+                    ...data,
+                    images: [],
+                    error: null
+                })
+      };
 
   const openModal = (largeImageURL, tags) => {
     setModal({
@@ -132,42 +127,34 @@ if (loadNextPage) { setStatus(Status.PENDING_MORE) }
     setPage(page => page + 1);
                };
   
-
   // Разметка
 
-      const loadMoreBtn =
-      status === 'resolved'
-      && images.length !== 0
-      && images.length !== total;
+const {error, images, loading} = data;
 
-return (
+     return (
   <Container>
       
     <Searchbar
       onSubmit={handleSearchSubmit}
     />
        
-    {status === 'rejected' && toast.error(error.message)}
+    {error && toast.error(error.message)}
 
-    {status === 'idle' && <div style={{ margin: 'auto' }}>PLEASE, INPUT A QUERY ! </div>}
-                     
-    {(status === 'resolved' || status === 'pending_more') && <ImageGallery images={images} onClick={openModal} />}
-    {loadMoreBtn && <Button onClick={onLoadMore}>Load more</Button>}
+    <ImageGallery images={images} onClick={openModal} />
     
-    {status === 'pending_more' && <AfterButton>Loading...</AfterButton>}
-        
-    {(status === 'pending' || status === 'pending_more') && <Loader />}
-        
     {modal.open && (
       <Modal onClose={closeModal}>
         <img src={modal.largeImageURL} alt={modal.tags} />
       </Modal>
     )}
-            
+    
+    {Boolean(images.length) && <Button onClick={onLoadMore}>Load more</Button>}
+             
+    {loading && <Loader />}
+               
     <ToastContainer theme="colored" position="top-right" autoClose={5000} />
   </Container>
 );
-   
-
+ 
 }
 export default App;
