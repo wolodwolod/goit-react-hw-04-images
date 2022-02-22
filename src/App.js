@@ -44,8 +44,6 @@ function App() {
   useEffect(() => {
 
     const prevPage = prevState => { return prevState.page };
-    // const prevImage = prevState => { return prevState.images };
-
     const loadNextPage = (page !== prevPage && page !== 1);
    
     // Функция - запрос
