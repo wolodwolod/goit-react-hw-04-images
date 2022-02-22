@@ -22,21 +22,18 @@ const Status = {
   RESOLVED: 'resolved',
   REJECTED: 'rejected',
 };
-const params = {
-  API_KEY: '25433386-4f25aa275c005ef248c74251b',
-  image_type: 'photo',
-  orientation: 'horizontal',
-  PER_PAGE: 12,
-}
+
+const PER_PAGE = 12;
+
 
 function App() {
   
   const [images, setImages] = useState([]);
   const [query, setQuery] = useState('');
   const [error, setError] = useState(null);
+  const [total, setTotal] = useState (0);
   const [page, setPage] = useState(1);
-   const [total, setTotal] = useState(0);
-    const [status, setStatus] = useState(Status.IDLE);
+  const [status, setStatus] = useState(Status.IDLE);
 
     const [modal, setModal] = useState({
         open: false,
@@ -53,15 +50,14 @@ function App() {
   useEffect(() => {
     
     // Функция - запрос
-    
-  const fetchImages = () => {
-        
-    fetchData(query, page, params)
-      .then(({ hits, totalHits }) => {
+          
+    const fetchImages = async () => {
+      try {
+        const { hits, totalHits } = await fetchData(query, page, PER_PAGE);
+        console.log(hits, totalHits);
 
-        console.log(hits, totalHits)
-
-        const totalPages = Math.ceil(totalHits / params.PER_PAGE);
+        const totalPages = Math.ceil(totalHits / PER_PAGE);
+                 
 
         if (!hits.length) {
           setStatus(Status.IDLE)
@@ -86,18 +82,21 @@ function App() {
         setImages([...images, ...newImages]);
         setTotal(totalHits);
         setStatus(Status.RESOLVED);
-          })
-      .catch(error =>
-        setError(error),
-        setStatus(Status.REJECTED))
-  }
+      }
+      catch (error) {
+        setError(error);
+          setStatus(Status.REJECTED)
+      }
+    }
+        
+  
 
     // Вызов функции
     
     if (query === '') return;
 
     
-    fetchImages(query, page, params);
+    fetchImages(query, page);
 
     if (loadNextPage) { setStatus(Status.PENDING_MORE) }
     if (images.length === 0) { setStatus(Status.PENDING) }

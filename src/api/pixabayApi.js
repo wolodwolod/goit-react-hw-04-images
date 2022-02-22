@@ -1,23 +1,26 @@
-// import axios from 'axios';
-const BASE_URL = 'https://pixabay.com/api';
+import axios from 'axios';
 
-function fetchData(query, page, params) {
-  
 
-  const { API_KEY, image_type, orient, PER_PAGE } = params; 
-  console.log(PER_PAGE)
-  
-  return fetch(`${BASE_URL}/?q=${query}&page=${page}&key=${API_KEY}&image_type=${image_type}&orientation=${orient}&per_page=${PER_PAGE}`)
-        .then(response => {
-          if (response.ok) {
-   
-      return response.json();
+const instance = axios.create({
+  baseURL: "https://pixabay.com/api",
+  params: {
+    key: '25433386-4f25aa275c005ef248c74251b',
+    image_type: 'photo',
+    orientation: 'horizontal',
     }
+})
 
-    return Promise.reject(new Error(`Sorry, no images with words ${query} found. Please, try again!' `));
-  });
-}
+const fetchData = async (q= '', page = 1, per_page) => {
+const {data} = await instance.get("/", {
+  params: {
+    q,
+    page,
+    per_page
+          }
+});
+  console.log(page, q, per_page)
+  
+  return data;    
+  }
 
 export default fetchData;
-
-
