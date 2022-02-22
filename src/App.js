@@ -47,9 +47,10 @@ const App = () => {
    
     // Функция - запрос
           
-    const fetchImages = async () => {
-      try {
-        const { hits, totalHits } = await fetchData(query, page, PER_PAGE);
+    const fetchImages = () => {
+      fetchData(query, page, PER_PAGE)
+      .then(({ hits, totalHits }) => {
+
         console.log(hits, totalHits);
 
         const totalPages = Math.ceil(totalHits / PER_PAGE);
@@ -78,12 +79,12 @@ const App = () => {
         setImages(prevImages => [...prevImages, ...newImages]);
         setTotal(totalHits);
         setStatus(Status.RESOLVED);
-      }
+      })
       
-      catch (error) {
-        setError(error);
+      .catch(error => 
+        setError(error),
           setStatus(Status.REJECTED)
-      }
+      )
     }
         
       // Вызов функции запроса 
@@ -119,7 +120,7 @@ if (loadNextPage) { setStatus(Status.PENDING_MORE) }
     });
   }
     
-  const closeModal = (largeImageURL, tags) => {
+  const closeModal = () => {
     setModal({
       open: false,
       largeImageURL: null,
