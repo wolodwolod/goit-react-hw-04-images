@@ -1,12 +1,12 @@
 import { memo, useState } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { BiSearchAlt } from 'react-icons/bi';
 import s from './Searchbar.module.css';
 
 
 function Searchbar({ onSubmit }) {
-  
+  console.log('rend SB');
   
 
   const [query, setQuery] = useState('');
@@ -61,8 +61,8 @@ function Searchbar({ onSubmit }) {
   
     );
   }
-// Searchbar.propTypes = {
-//   onSubmit: PropTypes.func,
-// };
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func,
+};
 
 export default memo(Searchbar);

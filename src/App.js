@@ -8,6 +8,7 @@ import  ImageGallery  from 'components/ImageGallery';
 import  Button  from 'components/Button';
 import  Modal  from 'components/Modal';
 import Loader from 'components/Loader';
+import { useCallback } from 'react';
 
 const PER_PAGE = 12;
 
@@ -96,7 +97,7 @@ const App = () => {
   
      // Функции
   
-  const handleSearchSubmit = query => {
+  const handleSearchSubmit = useCallback( query => {
 
     setQuery(query);
     setPage(1);
@@ -105,15 +106,15 @@ const App = () => {
                     images: [],
                     error: null
                 })
-      };
+      }, [data]);
 
-  const openModal = (largeImageURL, tags) => {
+  const openModal = useCallback((largeImageURL, tags) => {
     setModal({
       open: true,
       largeImageURL: largeImageURL,
       tags: tags,
     });
-  }
+  }, []);
     
   const closeModal = () => {
     setModal({
@@ -123,9 +124,9 @@ const App = () => {
     });
   }
       
-    const onLoadMore = () => {
+    const onLoadMore = useCallback( () => {
     setPage(page => page + 1);
-               };
+               }, []);
   
   // Разметка
 
